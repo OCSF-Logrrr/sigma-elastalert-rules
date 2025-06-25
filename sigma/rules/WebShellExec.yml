@@ -1,0 +1,47 @@
+title: WebShellExec
+id: 5F49C3AD-D171-4DD0-9F59-95709E5AC4FF
+status: test
+description: >
+  Detects Suricata alerts that report **execution attempts of uploaded
+  PHP files inside `/webapi/files/`** (typical WebShell drop folder).  
+  The rule keys on:  
+  * OCSF **Detection-Finding** records (`class_uid: 2004`)  
+  * `message` containing **“WebShell”**, **“.php”**, and **“/files”**  
+  Only simple term/contains logic is used, so the rule converts
+  1-for-1 into ElastAlert.
+
+author: logrr
+date: 2025-06-25
+tags:
+  - ocsf.detection_finding
+  - ids.suricata
+  - webshell
+  - attack.t1105
+  - attack.t1059
+
+logsource:
+  product: ocsf
+  category: detection
+
+detection:
+  suricata_alert:
+    class_uid: 2004
+    metadata.product.name: suricata
+    is_alert: true
+
+  webshell_msg:
+    message|contains: "WebShell"
+
+  files_path:
+    message|contains: "/files"
+
+  php_ext:
+    message|contains: ".php"
+
+  condition: suricata_alert and webshell_msg and files_path and php_ext
+
+falsepositives:
+  - 모의침투(펜테스트) 트래픽
+  - Suricata 규칙 테스트
+
+level: high
