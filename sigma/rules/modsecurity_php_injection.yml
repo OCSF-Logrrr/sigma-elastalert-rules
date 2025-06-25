@@ -1,0 +1,26 @@
+title: ModSecurity - PHP Injection
+id: 5b5e0e1f-b4a3-4531-9527-dbe58d2d2504
+status: test
+description: 'Triggers when an OCSF “Application Security Alert” (class_uid 6008) contains ModSecurity Core Rule Set ID 933150, which detects high-risk PHP function names indicative of PHP injection attempts.'
+author: logrr
+date: 2025-06-25
+logsource:
+  product: ocsf
+  category: application
+detection:
+  waf_alert:
+    class_uid: 6008
+  sel_scanner_rule:
+    message|contains: 'id "933150"'
+  condition: waf_alert and sel_scanner_rule
+falsepositives:
+  - 모의 침투 테스트
+  - 버그바운티
+level: high
+tags: 
+  - attack.t1505.003
+  - attack.t1190
+  - owasp.crs
+  - attack.injection
+  - web.waf
+  - ocsf.application_security_alert
