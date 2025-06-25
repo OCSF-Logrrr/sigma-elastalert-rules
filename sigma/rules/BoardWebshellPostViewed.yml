@@ -1,0 +1,42 @@
+title: BoardWebshellPostViewed
+id: 11DE95D6-04B6-4A61-972E-F41959BD01AA
+status: test
+description: >
+  Detects when an external client *views* the specific board post that is known
+  to host (or link to) an uploaded WebShell.  
+  In the baseline data the malicious posts were at **idx = 115 / 131 / 132**,
+  but you can extend the list in the `malicious_idx` variable.
+
+author: logrr
+date: 2025-06-25
+tags:
+  - ocsf.application_activity
+  - http
+  - webshell
+  - attack.execution
+
+logsource:
+  product: ocsf
+  service: http
+  category: application
+
+detection:
+  http_event:
+    class_uid: 4002
+
+  board_view:
+    http_request.url.path: "/webapi/board/content.php"
+
+  malicious_idx:
+    http_request.url.query_string|contains:
+      - "idx=115"
+      - "idx=131"
+      - "idx=132"
+
+  condition: http_event and board_view and malicious_idx
+
+falsepositives:
+  - Incident-response team reviewing the malicious post after compromise
+  - QA / staging environments re-using the same index numbers
+
+level: medium
