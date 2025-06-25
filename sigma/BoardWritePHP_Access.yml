@@ -1,0 +1,40 @@
+title: BoardWritePHP_Access
+id: 621F2B2C-A249-4C24-AC48-E15ED4D664B7
+status: test
+description: >
+  `/webapi/board/write.php` 페이지(게시글 작성·업로드 기능)에
+  접근한 요청을 탐지합니다.  
+  파일 업로드 취약점(WebShell 업로드 등) 사전 징후 파악 목적이며,
+  연속해서 **INSERT INTO board … '.php'** 쿼리(MySQL) →  
+  **GET /write.php** → **GET /index.php** 흐름이면
+  악성 업로드 가능성을 높게 판단할 수 있습니다.
+
+author: logrr
+date: 2025-06-25
+tags:
+  - nginx.access
+  - webshell
+  - reconnaissance
+  - attack.initial_access
+
+logsource:
+  product: nginx
+  service: access
+  category: web_server
+
+detection:
+  nginx_access:
+    fields.event.dataset: "nginx.access"
+  write_php_hit:
+    or:
+      - url.path|contains: "/webapi/board/write.php"
+      - http.request.referrer|contains: "/webapi/board/write.php"
+      - message|contains: "/webapi/board/write.php"
+
+  condition: nginx_access and write_php_hit
+
+falsepositives:
+  - 실제 게시판 사용자가 글 작성/수정하는 정상 행위  
+    (업로드 확장자·계정·User-Agent 등을 추가 필터링해 정밀 조정 가능)
+
+level: low
