@@ -1,0 +1,38 @@
+title: RootConnect
+id: E013CE94-2D58-40CC-9A33-0D65FC387155
+status: test
+description: >
+  Detects **MySQL CLI connections as root** coming from remote hosts.
+  In MySQL general-query logs the pattern appears as  
+  `Connect    root@<IP> on  using SSL/TLS`.  
+  Logged in OCSF as Datastore-Activity (`class_uid: 6005`).
+
+author: logrr
+date: 2025-06-25
+tags:
+  - ocsf.application_activity
+  - db.mysql
+  - privilege_escalation
+
+logsource:
+  product: ocsf
+  category: application
+
+detection:
+  mysql_evt:
+    class_uid: 6005
+    activity_id: 3
+
+  root_connect:
+    message|re: (?i)\bconnect\troot@
+
+  ssl_flag:
+    message|contains: "using SSL/TLS"
+
+  condition: mysql_evt and root_connect and ssl_flag
+
+falsepositives:
+  - 정상 외부 관리자의 root 접속
+  - 모니터링/백업 스크립트용 계정
+
+level: medium
