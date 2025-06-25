@@ -1,0 +1,42 @@
+title: WebShellPHPError
+id: 91E106E4-2027-4DF9-AAB1-1231EAEC86D4
+status: test
+description: >
+  Detects **nginx error-log** entries that reveal a web-shell
+  (`/webapi/files/test.php`) was invoked **without a cmd parameter**.
+  The PHP script throws  
+  *“Undefined index: cmd”* and *“system(): Cannot execute a blank command”*
+  when an attacker (or crawler) accesses the shell URL directly.  
+  Logged in OCSF *Application-Activity* events (`class_uid: 6008`).
+
+author: logrr
+date: 2025-06-25
+tags:
+  - ocsf.application_activity
+  - webshell
+  - php_error
+  - attack.discovery
+
+logsource:
+  product: ocsf
+  category: application
+  service: nginx
+
+detection:
+  app_evt:
+    class_uid: 6008
+    metadata.log_provider: nginx
+
+  undef_cmd:
+    message|contains: "Undefined index: cmd"
+
+  blank_cmd:
+    message|contains: "Cannot execute a blank command"
+
+  condition: app_evt and undef_cmd and blank_cmd
+
+falsepositives:
+  - 개발/QA 환경에서의 기능 점검
+  - 자동화 스캐너가 매개변수 없이 URL-헬스체크 수행
+
+level: medium
