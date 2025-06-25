@@ -1,0 +1,38 @@
+title: SelectVerComment
+id: 4BA671D5-65E4-4D25-8EEF-7194F582341D
+status: test
+description: >
+  Detects the initial probe **`SELECT @@version_comment LIMIT 1`**
+  that MySQL CLI issues right after an interactive connection.  
+  Logged as OCSF **Datastore Activity** events  
+  (`class_uid: 6005`, `activity_id: 4`).  
+  Only simple term/contains logic is used so the rule converts
+  one-to-one into ElastAlert.
+
+author: logrr
+date: 2025-06-25
+tags:
+  - ocsf.application_activity
+  - db.mysql
+  - cli_probe
+
+logsource:
+  product: ocsf
+  category: application
+
+detection:
+  mysql_evt:
+    class_uid: 6005
+    activity_id: 4
+    database.name: mysql
+
+  select_version:
+    message|contains: "@@version_comment"
+
+  condition: mysql_evt and select_version
+
+falsepositives:
+  - 정상 MySQL CLI 접속 직후 기본 프로브
+  - 헬스체크·모니터링 스크립트
+
+level: low
