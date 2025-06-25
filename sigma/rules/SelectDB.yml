@@ -1,0 +1,35 @@
+title: SelectDB
+id: 37E44FFE-3BA3-454F-8CF9-73C8F6FED185
+status: test
+description: >
+  Detects execution of **`SELECT DATABASE()`** (current-schema discovery)
+  inside OCSF Datastore-Activity events.  
+  Uses only equality / regex checks so the rule converts directly
+  to ElastAlert.
+
+author: logrr
+date: 2025-06-25
+tags:
+  - ocsf.application_activity
+  - db.mysql
+  - schema_enum
+
+logsource:
+  product: ocsf
+  category: application
+
+detection:
+  mysql_evt:
+    class_uid: 6005
+    activity_id: 4
+
+  sel_db_call:
+    message|re: (?i)\bselect\s+database\(\s*\)
+
+  condition: mysql_evt and sel_db_call
+
+falsepositives:
+  - 정상 애플리케이션 초기화/헬스체크
+  - DBA 진단 스크립트
+
+level: low
