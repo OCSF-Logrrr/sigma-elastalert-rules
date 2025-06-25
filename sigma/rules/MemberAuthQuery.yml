@@ -1,0 +1,38 @@
+title: MemberAuthQuery
+id: 5CAD4733-573E-4152-9877-816CEAF06557
+status: test
+description: >
+  Detects MySQL authentication-check queries that compare **userid**
+  (or user_id) and **userpw/password** fields in the **member** table,
+  recorded as OCSF *Datastore Activity* events (`class_uid: 6005`,
+  `activity_id: 4`).  
+  Only equality/regex/AND logic is used so the rule converts cleanly
+  to ElastAlert.
+
+author: logrr
+date: 2025-06-25
+tags:
+  - ocsf.application_activity
+  - db.mysql
+  - credential_check
+
+logsource:
+  product: ocsf
+  category: application
+
+detection:
+  mysql_query_event:
+    class_uid: 6005
+    database.name: mysql
+    activity_id: 4
+
+  member_auth_query:
+    message|re: (?i)\\bselect\\s+\\*?\\s*from\\s+member\\s+where\\s+.*(userid|user_id).*and.*(userpw|password)\\b
+
+  condition: mysql_query_event and member_auth_query
+
+falsepositives:
+  - 정상 로그인·세션 검증 로직
+  - 테스트/모니터링 스크립트
+
+level: medium
