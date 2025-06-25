@@ -18,11 +18,11 @@
 │   └── pipeline/
 │       └── logstash.conf
 ├── sigma/
-│	└── rules/
+│	└── rules/                  #sigma rules 저장소
 ├── elastalert/
-│	├── config.yml
-│	└── rules/
+│	├── config.yml              #elastalert 설정 파일
+│	└── rules/                  #elastalert rules 저장소
 ├── docker-compose.yml
-├── convert_sigma.sh
+├── convert_sigma.sh          #sigma rules -> elastalert rules 변환 스크립트
 └── .env
 ```
