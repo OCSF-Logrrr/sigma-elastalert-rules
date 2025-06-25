@@ -1,0 +1,41 @@
+title: WebShellCmd
+id: 006BFDC6-5A03-4F33-8065-A1068342AE59
+status: test
+description: >
+  Detects Suricata (class_uid 2004) alerts that indicate a **WebShell
+  command-execution attempt**.  
+  The pattern matches on the word *“WebShell”* plus a typical system
+  command token such as **`cat`**, which appears when an attacker tries
+  to read arbitrary files via a web-shell.
+
+author: logrr
+date: 2025-06-25
+tags:
+  - ocsf.detection_finding
+  - ids.suricata
+  - attack.t1059
+  - webshell
+
+logsource:
+  product: ocsf
+  category: detection
+
+detection:
+  suricata_finding:
+    class_uid: 2004
+    metadata.log_provider: suricata
+    is_alert: true
+
+  webshell_tag:
+    message|contains: "WebShell"
+
+  sys_cmd:
+    message|re: (?i)\b(cat|wget|curl|uname|whoami|id)\b
+
+  condition: suricata_finding and webshell_tag and sys_cmd
+
+falsepositives:
+  - Suricata 규칙 테스트 / 튜닝 작업
+  - 모의침투(Pen-test) 트래픽
+
+level: high
