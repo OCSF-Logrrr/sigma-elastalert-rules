@@ -1,0 +1,36 @@
+title: Board Query
+id: CB8E88A6-FAEB-40B9-A88A-D2A6397C81FE
+status: test
+description: >
+  OCSF Application Activity(class_uid 6005) 이벤트 중  
+  **board** 테이블 전체 조회( `SELECT * FROM board` )를 탐지합니다.  
+  단순 equals/contains 로직만 써서 ElastAlert로 그대로 옮기기 쉽습니다.
+author: logrr
+date: 2025-06-25
+tags:
+  - ocsf.application_activity
+  - db.mysql
+  - board_view
+
+logsource:
+  product: ocsf
+  category: application
+
+detection:
+  mysql_event:
+    class_uid: 6005
+    database.name: mysql
+
+  query_activity:
+    activity_id: 4
+
+  board_query:
+    message|re: (?i)\\bselect\\s+\\*\\s+from\\s+board\\b
+
+  condition: mysql_event and query_activity and board_query
+
+falsepositives:
+  - 정상적인 게시판 전체 글 조회
+  - 백업/모니터링 스크립트
+
+level: low
