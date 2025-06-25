@@ -1,0 +1,38 @@
+title: UseBoardDB
+id: 69DFDDFC-DB29-41F4-B06B-5424F8E35B47
+status: test
+description: >
+  Detects the “USE board” operation logged in MySQL general-query logs,
+  which appears in OCSF **Datastore Activity** events as  
+  `Init DB	board` ( `type_uid: 600504` ).  
+  The rule uses only equality/contains logic so it can be mapped
+  to ElastAlert without modifications.
+
+author: logrr
+date: 2025-06-25
+tags:
+  - ocsf.application_activity
+  - db.mysql
+  - board_schema
+
+logsource:
+  product: ocsf
+  category: application
+
+detection:
+  mysql_ds_evt:
+    class_uid: 6005
+
+  initdb_type:
+    type_uid: 600504
+
+  use_board_msg:
+    message|contains: "Init DB\tboard"
+
+  condition: mysql_ds_evt and initdb_type and use_board_msg
+
+falsepositives:
+  - 정상적인 애플리케이션 초기화
+  - DBA·모니터링 스크립트
+
+level: low
