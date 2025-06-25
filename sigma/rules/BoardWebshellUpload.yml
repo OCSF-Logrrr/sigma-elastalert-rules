@@ -1,0 +1,44 @@
+title: BoardWebshellUpload
+id: DBC2C8D9-B037-4138-BE25-856182C241AE
+status: test
+description: >
+  Detects a **MySQL INSERT** that adds a new record to the `board`
+  table and references a file whose name ends in “.php”.  
+  In typical bulletin-board applications only images or documents
+  are expected; the presence of a PHP file strongly suggests a
+  WebShell (or at least server-side code) is being uploaded.
+
+author: logrr
+date: 2025-06-25
+tags:
+  - ocsf.application_activity
+  - mysql
+  - webshell
+  - attack.initial_access
+
+logsource:
+  product: ocsf
+  service: database
+  category: application
+
+detection:
+  mysql_event:
+    class_uid: 6005
+    database.name: "mysql"
+
+  board_insert:
+    actor.process.cmd_line|contains: "INSERT INTO board"
+
+  php_payload:
+    actor.process.cmd_line|contains:
+      - ".php')"
+      - ".php\""
+      - ".php "
+
+  condition: mysql_event and board_insert and php_payload
+
+falsepositives:
+  - 교육 목적 등으로 실제 PHP 소스를 저장하는 드문 경우  
+    - `VALUES(` 키워드, 업로드 경로/사용자 역할 등을 추가로 필터링하여 오탐 방지
+    
+level: high
