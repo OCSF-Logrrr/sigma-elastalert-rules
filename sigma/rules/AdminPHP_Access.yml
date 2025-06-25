@@ -1,0 +1,35 @@
+title: AdminPHP Access
+id: DADA5F5F-9C75-4FC7-A1FC-C729FA80D6A9
+status: test
+description: >
+  Detects successful (HTTP 200) requests to **/admin/admin.php** in
+  OCSF HTTP Activity events.  
+  Uses only simple equality/contains checks so it converts cleanly
+  to ElastAlert.
+
+author: logrr
+date: 2025-06-25
+tags:
+  - attack.t1190
+  - ocsf.http_activity
+  - web.admin_page
+
+logsource:
+  product: ocsf
+  category: network
+  service: http_activity
+
+detection:
+  http_event:
+    class_uid: 4002
+  sel_admin_path:
+    http_request.url.path: /admin/admin.php
+  sel_status_ok:
+    http_response.code: 200
+  condition: http_event and sel_admin_path and sel_status_ok
+
+falsepositives:
+  - 정상 관리자 로그인/헬스체크
+  - 취약점 스캐너 테스트
+
+level: low
