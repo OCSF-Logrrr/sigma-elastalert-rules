@@ -1,0 +1,29 @@
+title: OCSF – MySQL Quit
+id: 44702213-DD46-4CF4-AC06-A055548DBEAB
+status: test
+description: >
+  Detects MySQL connection-termination (“Quit”) messages
+  within OCSF Application Activity (class_uid 6005) events.  
+author: logrr
+date: 2025-06-25
+tags:
+  - ocsf.application_activity
+  - db.mysql
+
+logsource:
+  product: ocsf
+  category: application
+
+detection:
+  app_event:
+    class_uid: 6005
+  sel_mysql:
+    database.name: mysql
+  sel_quit:
+    message|contains: Quit
+  condition: app_event and sel_mysql and sel_quit
+
+falsepositives:
+  - 정상적인 세션 종료
+
+level: low
