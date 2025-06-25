@@ -1,0 +1,40 @@
+title: MySQLIDS
+id: E7205301-5E70-410E-A057-9CA7E867E311
+status: test
+description: >
+  Detects Suricata IDS alerts that flag **external, abnormal MySQL
+  connection attempts** (Priority 1 / “Attempted Administrator Privilege Gain”).
+  Logged as OCSF Application-Activity (`class_uid: 6005`) events.
+  Only equality and contains-string checks are used so the rule converts
+  directly to ElastAlert.
+
+author: logrr
+date: 2025-06-25
+tags:
+  - ocsf.application_activity
+  - ids.suricata
+  - db.mysql
+  - attack.t1190
+
+logsource:
+  product: ocsf
+  category: application
+
+detection:
+  ids_evt:
+    class_uid: 6005
+    metadata.log_provider: suricata
+
+  mysql_alert:
+    message|contains: "MySQL"
+
+  admin_gain:
+    message|contains: "Attempted Administrator Privilege Gain"
+
+  condition: ids_evt and mysql_alert and admin_gain
+
+falsepositives:
+  - Suricata 테스트 패턴
+  - IPS/방화벽 검증 트래픽
+
+level: high
