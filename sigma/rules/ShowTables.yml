@@ -1,0 +1,39 @@
+title: ShowTables
+id: 0738DD01-592C-4506-80BC-EAAE2BE891F5
+status: test
+description: >
+  Detects MySQL schema-enumeration queries (`SHOW TABLES`) logged as
+  OCSF *Datastore Activity* events (`class_uid: 6005`, `activity_id: 4`).  
+  Such commands reveal all tables in the selected database (e.g., **board**)
+  and often precede data-dump or reconnaissance activity.  
+  The rule relies only on simple term/regex matches → direct ElastAlert
+  conversion.
+author: logrr
+date: 2025-06-25
+tags:
+  - ocsf.application_activity
+  - db.mysql
+  - schema_enum
+
+logsource:
+  product: ocsf
+  category: application
+
+detection:
+  mysql_event:
+    class_uid: 6005
+    database.name: mysql
+
+  query_activity:
+    activity_id: 4
+
+  show_tables:
+    message|re: (?i)\bshow\s+tables\b
+
+  condition: mysql_event and query_activity and show_tables
+
+falsepositives:
+  - 정상 DBA/백업 스크립트의 스키마 점검
+  - 애플리케이션 초기화 절차
+
+level: low
