@@ -1,0 +1,39 @@
+title: IndexAfterLogin
+id: 28A489BA-A99D-4B93-97F6-A1ECEC6E8D1A
+status: test
+description: >
+  Detects HTTP requests that **successfully (200 OK) reach /index.php
+  immediately after coming from /webapi/member/login.php**.
+  All conditions rely on simple equality / contains logic so the rule
+  can be auto-translated to ElastAlert without change.
+
+author: logrr  
+date: 2025-06-25
+tags:
+  - ocsf.http_activity
+  - web.login_success
+
+logsource:
+  product: ocsf
+  category: network
+  service: http_activity
+
+detection:
+  http_event:
+    class_uid: 4002
+
+  index_ok:
+    http_request.method: GET
+    http_request.url.path: /index.php
+    http_response.code: 200
+
+  from_login:
+    http_request.referrer|contains: /webapi/member/login.php
+
+  condition: http_event and index_ok and from_login
+
+falsepositives:
+  - 정상 로그인 후 리다이렉트
+  - 모니터링 / 헬스체크 스크립트
+
+level: low
