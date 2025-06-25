@@ -1,0 +1,25 @@
+title: ModSecurity - Back or working file extension
+id: 4429e36f-6e63-4391-9abe-5cacf29fd2b1
+status: test
+description: 'Triggers when an OCSF “Application Security Alert” (class_uid 6008) contains ModSecurity Core Rule Set ID 920500, which detects access attempts to backup or working files.'
+author: logrr
+date: 2025-06-25
+logsource:
+  product: ocsf
+  category: application
+detection:
+  waf_alert:
+    class_uid: 6008
+  sel_back_working_file_rule:
+    message|contains: 'id "920500"'
+  condition: waf_alert and sel_back_working_file_rule
+falsepositives:
+  - 모의 침투 테스트
+  - 버그바운티
+level: high
+tags: 
+  - attack.t1190
+  - owasp.crs
+  - attack.initial_access
+  - web.waf
+  - ocsf.application_security_alert
