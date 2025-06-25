@@ -1,0 +1,36 @@
+title: ShowDBs
+id: 29F531DF-2BDB-4F87-8972-A8B0F39A6F5F
+status: test
+description: >
+  Detects execution of **`SHOW DATABASES`** (full-schema enumeration)
+  captured in OCSF Datastore-Activity events (`class_uid: 6005`,
+  `activity_id: 4`).  
+  Uses only simple term / regex checks so it converts straight to
+  ElastAlert.
+
+author: logrr
+date: 2025-06-25
+tags:
+  - ocsf.application_activity
+  - db.mysql
+  - schema_enum
+
+logsource:
+  product: ocsf
+  category: application
+
+detection:
+  mysql_evt:
+    class_uid: 6005
+    activity_id: 4
+
+  show_dbs:
+    message|re: (?i)\bshow\s+databases\b
+
+  condition: mysql_evt and show_dbs
+
+falsepositives:
+  - 정상 DBA/백업 스크립트
+  - 애플리케이션 초기화 점검
+
+level: low
