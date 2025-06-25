@@ -1,0 +1,39 @@
+title: MemberDump
+id: A5370A65-446D-40FF-AEC4-0F33E4500F54
+status: test
+description: >
+  Detects MySQL queries that dump **all columns** from the **member**
+  table (e.g., `SELECT * FROM member`) inside OCSF Datastore-Activity
+  events (`class_uid: 6005`, `activity_id: 4`).  
+  The rule uses only term / regex checks and a single AND condition so
+  it can be auto-translated to ElastAlert without modification.
+
+author: logrr
+date: 2025-06-25
+tags:
+  - ocsf.application_activity
+  - db.mysql
+  - data_exposure
+
+logsource:
+  product: ocsf
+  category: application
+
+detection:
+  mysql_event:
+    class_uid: 6005
+    database.name: mysql
+
+  query_activity:
+    activity_id: 4
+
+  member_star:
+    # Case-insensitive regex for “SELECT * FROM member”
+    message|re: (?i)\bselect\s+\*\s+from\s+member\b
+
+  condition: mysql_event and query_activity and member_star
+
+falsepositives:
+  - 정상 관리자/백업 스크립트의 전체 회원 테이블 조회
+
+level: medium
