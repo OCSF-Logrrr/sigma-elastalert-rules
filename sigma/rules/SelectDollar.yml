@@ -1,0 +1,37 @@
+title: SelectDollar
+id: 81A89846-4A9E-444C-A286-2C919A5C3720
+status: test
+description: >
+  Detects the minimalist probe **`SELECT $$`** that MySQL CLI emits
+  immediately after an interactive connection.  
+  Logged as OCSF *Datastore-Activity* events (`class_uid: 6005`,
+  `activity_id: 4`).  
+  Only term / contains checks are used → direct ElastAlert mapping.
+
+author: logrr
+date: 2025-06-25
+tags:
+  - ocsf.application_activity
+  - db.mysql
+  - cli_probe
+
+logsource:
+  product: ocsf
+  category: application
+
+detection:
+  mysql_evt:
+    class_uid: 6005
+    database.name: mysql
+    activity_id: 4
+
+  select_dollar:
+    message|contains: "select $$"
+
+  condition: mysql_evt and select_dollar
+
+falsepositives:
+  - 정상 MySQL CLI 접속 직후 기본 프로브
+  - 헬스체크/모니터링 스크립트
+
+level: low
