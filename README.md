@@ -6,6 +6,7 @@
 
 # 아키텍처 구조
 <img width="685" alt="스크린샷 2025-06-25 오후 6 34 30" src="https://github.com/user-attachments/assets/ef11e66b-1511-4b12-acb6-eb373c40215a" />
+
 1. Logstash에서 OCSF 포맷으로 변환된 로그를 가져오면 Elasticsearch에 저장되고 Kibana로 시각화합니다.
 2. 이 때 Elastalert는 Elasticsearch에 저장된 로그를 주기적으로 검사합니다. (ElastAlert는 Sigma Rules를 ElastAlert Rules 포맷으로 변환된 Rules을 사용)
 4. Rules에 따라 탐지된 공격은 Slack으로 전송됩니다.
