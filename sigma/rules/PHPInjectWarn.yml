@@ -1,0 +1,40 @@
+title: PHPInjectWarn
+id: 3DB4DA4E-C950-4A9B-AE5F-20CBE96479D3
+status: test
+description: >
+  Detects ModSecurity WAF alerts that flag **PHP Injection** attempts,
+  recorded in OCSF **Application-Activity** events (`class_uid: 6008`).
+  The rule keys on the strings *“ModSecurity”* and *“PHP Injection Attack”*
+  in the error-log message.  
+  Only equality / contains checks are used so the rule converts
+  directly to ElastAlert.
+
+author: logrr
+date: 2025-06-25
+tags:
+  - ocsf.application_activity
+  - waf.modsecurity
+  - attack-injection-php
+
+logsource:
+  product: ocsf
+  category: application
+
+detection:
+  waf_evt:
+    class_uid: 6008
+    metadata.log_provider: apache
+
+  php_inject:
+    message|contains: "PHP Injection Attack"
+
+  modsec_tag:
+    message|contains: "ModSecurity"
+
+  condition: waf_evt and modsec_tag and php_inject
+
+falsepositives:
+  - WAF 테스트 트래픽
+  - 취약점 스캐너의 의도적 PHP 인젝션 시도
+
+level: high
