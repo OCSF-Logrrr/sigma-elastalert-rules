@@ -1,0 +1,33 @@
+title: OCSF – ModSecurity Scanner User-Agent (gobuster) Detected
+id: 7E64201B-F232-4323-9B2F-DA1A97ECCE2D
+status: test
+description: >
+  Triggers when an OCSF “Application Security Alert” (class_uid 6008) contains
+  ModSecurity Core Rule Set ID 913100, which flags User-Agents associated with
+  directory-brute-force scanners such as gobuster.
+author: logrr
+date: 2025-06-23
+tags:
+  - attack.t1190
+  - attack.t1046
+  - web.waf
+  - owasp.crs
+  - ocsf.application_security_alert
+
+logsource:
+  product: ocsf
+  category: application
+  service: application_security
+
+detection:
+  waf_alert:
+    class_uid: 6008
+  sel_scanner_rule:
+    message|contains: 'id "913100"'
+  condition: waf_alert and sel_scanner_rule
+
+falsepositives:
+  - 사내 취약점 스캐너·모의침투 테스트
+  - 외부 버그바운티 참가자의 합법적 스캔
+
+level: medium
