@@ -1,0 +1,38 @@
+title: BoardHitUpdate
+id: 4DBA0581-71E2-4AD3-9062-E42B727FBDC7
+status: test
+description: >
+  Detects MySQL *UPDATE* statements that increment the view-counter
+  column (`hit = hit + 1`) of the **board** table.  
+  This query is executed whenever a web-shell-hosted article is opened,
+  and serves as a handy signal that the attacker’s uploaded page was
+  just accessed.
+
+author: logrr
+date: 2025-06-25
+tags:
+  - ocsf.application_activity
+  - mysql
+  - webshell
+  - attack.collection
+
+logsource:
+  product: ocsf
+  category: application
+  service: mysql
+
+detection:
+  mysql_evt:
+    class_uid: 6005
+
+  board_hit_inc:
+    actor.process.cmd_line|contains: "UPDATE board SET hit = hit + 1"
+    message|contains: "UPDATE board SET hit = hit + 1"
+
+  condition: mysql_evt and board_hit_inc
+
+falsepositives:
+  - 정상 사용자·크롤러가 게시글 열람
+  - QA/모니터링 스크립트가 뷰 수 테스트
+
+level: low      # informational—use for correlation rather than alert fatigue
