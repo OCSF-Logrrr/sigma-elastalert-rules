@@ -1,0 +1,45 @@
+title: WebShellCmd_cmd
+id: 8E39D220-669C-4A9E-B411-1EAD6E2CA445
+status: test
+description: >
+  Detects HTTP requests that attempt to run **system commands through a
+  web-shell**—specifically the classic  
+  `?cmd=cat /…/content.php` pattern—logged in OCSF *HTTP Activity*
+  events (`class_uid: 4002`).  
+  The rule watches for access to **`/webapi/files/test.php`** (the
+  drop-perimeter shell script) plus a query-string beginning with
+  `cmd=` and containing one of the high-risk commands
+  `(cat|curl|wget|id|whoami|uname)`.  
+  It uses only simple term/regex filters so Sigma ➜ ElastAlert
+  conversion is loss-free.
+
+author: logrr
+date: 2025-06-25
+tags:
+  - ocsf.http_activity
+  - webshell
+  - attack.t1059
+  - attack.t1105
+
+logsource:
+  product: ocsf
+  category: network
+  service: http_activity
+
+detection:
+  http_evt:
+    class_uid: 4002
+
+  shell_path:
+    http_request.url.path: /webapi/files/test.php
+
+  cmd_param:
+    http_request.url.query_string|re: (?i)\bcmd=(cat|curl|wget|id|whoami|uname)\b
+
+  condition: http_evt and shell_path and cmd_param
+
+falsepositives:
+  - 개발·테스트 환경에서의 기능 검증
+  - 보안 점검 도구의 의도적 web-shell 테스트
+
+level: high
