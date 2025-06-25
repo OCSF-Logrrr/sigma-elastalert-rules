@@ -1,0 +1,31 @@
+title: OCSF – MySQL Query
+id: 5323ECA3-BECC-4B4E-B44E-7B6AFB8743DE
+status: test
+description: >
+  Detects MySQL query statements recorded as OCSF
+  Application Activity (class_uid 6005) events.  
+author: logrr
+date: 2025-06-25
+tags:
+  - ocsf.application_activity
+  - db.mysql
+
+logsource:
+  product: ocsf
+  category: application
+
+detection:
+  app_event:
+    class_uid: 6005
+  sel_mysql:
+    database.name: mysql
+  sel_activity_query:
+    activity_id: 4
+  sel_message_query:
+    message|contains: "\t Query\t"
+  condition: app_event and sel_mysql and (sel_activity_query or sel_message_query)
+
+falsepositives:
+  - 정상 SQL 조회
+
+level: low
