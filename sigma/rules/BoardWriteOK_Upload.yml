@@ -1,0 +1,37 @@
+title: BoardWriteOK_Upload
+id: 3D0C2B74-BDD3-434F-A08D-78AC0A10C327
+status: test
+description: >
+  `/webapi/board/write_ok.php`로 향하는 **POST** 요청을 탐지합니다.  
+  게시글 작성/첨부파일 업로드가 실제 실행되는 단계이므로,  
+  연이어 업로드 확장자가 `.php`·`.jsp` 등 실행 가능한 파일이면
+  WebShell 탑재 시도로 간주할 수 있습니다.
+
+author: logrr
+date: 2025-06-25
+tags:
+  - nginx.access
+  - webshell
+  - file_upload
+  - attack.initial_access
+
+logsource:
+  product: nginx
+  service: access
+  category: web_server
+
+detection:
+  nginx_access:
+    fields.event.dataset: "nginx.access"
+  write_ok_hit:
+    url.path|contains: "/webapi/board/write_ok.php"
+  post_method:
+    http.request.method: "POST"
+
+  condition: nginx_access and write_ok_hit and post_method
+
+falsepositives:
+  - 정상적인 게시글 작성/파일 업로드
+  - 관리 페이지를 통한 정규 백업 업로드
+
+level: medium
