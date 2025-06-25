@@ -1,0 +1,40 @@
+title: LoginOK
+id: 473CD3A9-B006-4374-89F9-4DFAFBC2281D
+status: test
+description: >
+  Detects HTTP **POST** requests to **/webapi/member/login_ok.php** that
+  originate from the login form **/webapi/member/login.php**, captured in
+  OCSF *HTTP Activity* events (`class_uid: 4002`).  
+
+author: logrr
+date: 2025-06-25
+tags:
+  - ocsf.http_activity
+  - web.login_attempt
+
+logsource:
+  product: ocsf
+  category: network
+  service: http_activity 
+
+detection:
+  http_event:
+    class_uid: 4002
+
+  login_ok_path:
+    http_request.http_method: POST
+    http_request.url.path: /webapi/member/login_ok.php
+
+  login_ok_msg:
+    message|contains: "/webapi/member/login_ok.php"
+
+  from_login_form:
+    message|contains: "/webapi/member/login.php"
+
+  condition: http_event and (login_ok_path or login_ok_msg) and from_login_form
+
+falsepositives:
+  - 정상 로그인 시도
+  - QA·모니터링 스크립트
+
+level: low
