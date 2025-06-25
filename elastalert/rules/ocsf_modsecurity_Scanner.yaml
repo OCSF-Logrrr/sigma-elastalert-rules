@@ -1,0 +1,14 @@
+description: "Triggers when an OCSF \u201CApplication Security Alert\u201D (class_uid
+  6008) contains ModSecurity Core Rule Set ID 913100, which flags User-Agents associated
+  with directory-brute-force scanners such as gobuster.\n"
+filter:
+- query:
+    query_string:
+      query: class_uid:6008 AND message:*913100*
+index: '*'
+name: "OCSF \u2013 ModSecurity Scanner User-Agent (gobuster) Detected"
+priority: 2
+type: any
+
+alert:
+  - "slack"
