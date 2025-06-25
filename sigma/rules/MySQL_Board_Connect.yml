@@ -1,0 +1,34 @@
+title: MySQL Board Connect
+id: FE49876E-C7DD-4DE3-99B9-25652EE5AB40
+status: test
+description: >
+  Triggers when a MySQL “Connect” event targets the **board**
+  database.  Uses only equality, contains-string, and AND logic
+  so the rule converts cleanly to ElastAlert.  
+author: logrr
+date: 2025-06-25
+tags:
+  - ocsf.application_activity
+  - db.mysql
+
+logsource:
+  product: ocsf
+  category: application
+
+detection:
+  mysql_event:
+    class_uid: 6005
+    database.name: mysql
+
+  connect_activity:
+    activity_id: 3
+
+  board_db:
+    message|contains: " on board "
+
+  condition: mysql_event and connect_activity and board_db
+
+falsepositives:
+  - 정상적인 애플리케이션/관리자 DB 연결
+
+level: low
