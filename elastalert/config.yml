@@ -1,0 +1,20 @@
+es_host: es01
+es_username: elastic
+es_password: p@ssw0rd1234
+es_port: 9200
+use_ssl: true
+verify_certs: false
+es_username: elastic
+es_password: ${ELASTIC_PASSWORD}
+
+rules_folder: /opt/elastalert/rules
+writeback_index: elastalert_status
+
+run_every: { minutes: 1 }
+buffer_time: { minutes: 15 }
+ea_schema_error_strategy: ignore
+slack_webhook_url: "${SLACK_WEBHOOK_URL}"
+
+rule_defaults:
+  alert:
+    - slack
