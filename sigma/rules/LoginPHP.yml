@@ -1,0 +1,38 @@
+title: LoginPHP
+id: 2C7E99C2-EB5E-4EA6-99A0-A443E67C199B
+status: test
+description: >
+  Detects successful **GET** requests to the
+  login form **/webapi/member/login.php** in OCSF
+  HTTP-Activity (`class_uid: 4002`) events.
+  Uses only equality / contains logic so it converts
+  directly to ElastAlert.
+author: logrr
+date: 2025-06-25
+tags:
+  - ocsf.http_activity
+  - web.login_page
+
+logsource:
+  product: ocsf
+  category: network
+  service: http_activity
+
+detection:
+  http_evt:
+    class_uid: 4002
+
+  login_path:
+    http_request.url.path: /webapi/member/login.php
+
+  get_ok:
+    http_request.http_method: GET
+    http_response.code: 200
+
+  condition: http_evt and login_path and get_ok
+
+falsepositives:
+  - 정상 로그인 페이지 조회
+  - 헬스체크/모니터링 스크립트
+
+level: low
