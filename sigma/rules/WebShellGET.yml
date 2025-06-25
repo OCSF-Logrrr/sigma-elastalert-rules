@@ -1,0 +1,37 @@
+title: WebShellGET
+id: 064651CD-3121-4739-9AC0-263B930D43CC
+status: test
+description: >
+  Detects successful HTTP requests (`200 OK`) to the uploaded-file
+  staging path **`/webapi/files/test.php`**—a known web-shell drop
+  location.  Logged in OCSF HTTP-Activity events (`class_uid: 4002`).
+
+author: logrr
+date: 2025-06-25
+tags:
+  - ocsf.http_activity
+  - webshell
+  - attack.t1105
+
+logsource:
+  product: ocsf
+  category: network
+  service: http_activity
+
+detection:
+  http_evt:
+    class_uid: 4002
+
+  webshell_path:
+    http_request.url.path: /webapi/files/test.php
+
+  status_ok:
+    http_reponse.code: 200
+
+  condition: http_evt and webshell_path and status_ok
+
+falsepositives:
+  - 개발자·QA에서의 정상 파일 테스트 호출
+  - 보안 점검·침투 테스트 트래픽
+
+level: medium
