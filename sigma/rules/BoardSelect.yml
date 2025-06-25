@@ -1,0 +1,37 @@
+title: BoardSelect
+id: B13F0668-22D4-4533-AFE6-2F883508C427
+status: test
+description: >
+  Flags direct *SELECT* statements that pull a single row from the **board**
+  table (`SELECT * FROM board WHERE idx = …`).  
+  When the attacker (or anyone else) opens the uploaded web-shell page, the
+  CMS issues this query to fetch the article’s content.
+
+author: logrr
+date: 2025-06-25
+tags:
+  - ocsf.application_activity
+  - mysql
+  - webshell
+  - attack.collection
+
+logsource:
+  product: ocsf
+  category: application
+  service: mysql
+
+detection:
+  mysql_evt:
+    class_uid: 6005
+
+  board_row_select:
+    actor.process.cmd_line|startswith: "SELECT * FROM board WHERE idx"
+    message|startswith: "SELECT * FROM board WHERE idx"
+
+  condition: mysql_evt and board_row_select
+
+falsepositives:
+  - 정상 게시글 열람 (legitimate users or crawlers)
+  - 검색엔진 인덱싱
+
+level: low
