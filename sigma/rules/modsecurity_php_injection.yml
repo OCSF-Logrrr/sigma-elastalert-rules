@@ -10,9 +10,9 @@ logsource:
 detection:
   waf_alert:
     class_uid: 6008
-  sel_scanner_rule:
+  sel_php_injection_rule:
     message|contains: 'id "933150"'
-  condition: waf_alert and sel_scanner_rule
+  condition: waf_alert and sel_php_injection_rule
 falsepositives:
   - 모의 침투 테스트
   - 버그바운티
