@@ -1,0 +1,11 @@
+description: "Detects Suricata alerts that report **execution attempts of uploaded PHP files inside `/webapi/files/`** (typical WebShell drop folder).   The rule keys on:   * OCSF **Detection-Finding** records (`class_uid: 2004`)   * `message` containing **“WebShell”**, **“.php”**, and **“/files”**   Only simple term/contains logic is used, so the rule converts 1-for-1 into ElastAlert.\n"
+filter:
+  - query:
+      query_string:
+        query: class_uid:2004 AND metadata.product.name:suricata AND is_alert:true AND message:*WebShell* AND message:*files* AND message:*3000000*
+index: '*'
+name: WebShellExec
+priority: 3
+type: any
+alert:
+  - slack

@@ -1,0 +1,13 @@
+description: 'Detects when an external client *views* the specific board post that is known to host (or link to) an uploaded WebShell.   In the baseline data the malicious posts were at **idx = 115 / 131 / 132**, but you can extend the list in the `malicious_idx` variable.'
+
+filter:
+  - query:
+      query_string:
+        query: class_uid:4002 and http_request.url.path:/webapi/board/content.php and http_request.url.query_string:*idx*
+
+index: '*'
+name: BoardWebshellPostViewed
+priority: 2
+type: any
+alert:
+  - slack

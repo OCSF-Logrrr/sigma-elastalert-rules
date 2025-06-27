@@ -1,0 +1,11 @@
+description: "Detects the minimalist probe **`SELECT $$`** that MySQL CLI emits immediately after an interactive connection.   Logged as OCSF *Datastore-Activity* events (`class_uid: 6005`, `activity_id: 4`).   Only term / contains checks are used → direct ElastAlert mapping.\n"
+filter:
+  - query:
+      query_string:
+        query: class_uid:6005 AND message:*select* AND message.keyword:*$$* AND message:*Query*
+index: '*'
+name: SelectDollar
+priority: 1
+type: any
+alert:
+  - slack

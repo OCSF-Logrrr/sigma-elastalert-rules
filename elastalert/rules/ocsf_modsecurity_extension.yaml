@@ -1,0 +1,13 @@
+description: "Triggers when an OCSF \u201CApplication Security Alert\u201D (class_uid
+  6008) contains ModSecurity Core Rule Set ID 920440, detecting access attempts to
+  restricted or potentially sensitive file extensions in the URI."
+filter:
+- query:
+    query_string:
+      query: class_uid:6008 AND message:*920440* AND message:*ModSecurity*
+index: '*'
+name: ModSecurity - file extension
+priority: 3
+type: any
+alert:
+  - slack

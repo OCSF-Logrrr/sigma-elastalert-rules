@@ -1,0 +1,11 @@
+description: "Detects a **MySQL INSERT** that adds a new record to the `board` table and references a file whose name ends in “.php”.   In typical bulletin-board applications only images or documents are expected; the presence of a PHP file strongly suggests a WebShell (or at least server-side code) is being uploaded.\n"
+filter:
+  - query:
+      query_string:
+        query: class_uid:6005 AND database.name:mysql AND actor.process.cmd_line.keyword:*INSERT* AND actor.process.cmd_line.keyword:*board* AND actor.process.cmd_line.keyword:*php*
+index: '*'
+name: BoardWebshellUpload
+priority: 3
+type: any
+alert:
+  - slack

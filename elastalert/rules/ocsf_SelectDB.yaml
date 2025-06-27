@@ -1,0 +1,11 @@
+description: 'Detects execution of **`SELECT DATABASE()`** (current-schema discovery) inside OCSF Datastore-Activity events.   Uses only equality / regex checks so the rule converts directly to ElastAlert.'
+filter:
+  - query:
+      query_string:
+        query: class_uid:6005 AND message:*SELECT* AND message:*DATABASE*
+index: '*'
+name: SelectDB
+priority: 1
+type: any
+alert:
+  - slack

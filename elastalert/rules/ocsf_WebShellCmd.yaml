@@ -1,0 +1,11 @@
+description: "Detects Suricata (class_uid 2004) alerts that indicate a **WebShell command-execution attempt**.   The pattern matches on the word *“WebShell”* plus a typical system command token such as **`cat`**, which appears when an attacker tries to read arbitrary files via a web-shell.\n"
+filter:
+  - query:
+      query_string:
+        query: class_uid:2004 AND metadata.product.name:suricata AND is_alert:true AND message:*WebShell* AND message:*files* AND message:*3000011*
+index: '*'
+name: WebShellCmd
+priority: 3
+type: any
+alert:
+  - slack

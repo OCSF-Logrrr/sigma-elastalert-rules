@@ -1,0 +1,11 @@
+description: "Detects MySQL schema-enumeration queries (`SHOW TABLES`) logged as OCSF *Datastore Activity* events (`class_uid: 6005`, `activity_id: 4`).   Such commands reveal all tables in the selected database (e.g., **board**) and often precede data-dump or reconnaissance activity.   The rule relies only on simple term/regex matches → direct ElastAlert conversion.\n"
+filter:
+  - query:
+      query_string:
+        query: class_uid:6005 AND message:*show* AND message:*tables*
+index: '*'
+name: ShowTables
+priority: 1
+type: any
+alert:
+  - slack

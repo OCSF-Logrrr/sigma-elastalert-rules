@@ -1,0 +1,13 @@
+description: "Triggers when an OCSF \u201CApplication Security Alert\u201D (class_uid
+  6008) contains ModSecurity Core Rule Set ID 920500, which detects access attempts
+  to backup or working files."
+filter:
+- query:
+    query_string:
+      query: class_uid:6008 AND message:*920500* AND message:*ModSecurity*
+index: '*'
+name: ModSecurity - Back or working file extension
+priority: 3
+type: any
+alert:
+  - slack

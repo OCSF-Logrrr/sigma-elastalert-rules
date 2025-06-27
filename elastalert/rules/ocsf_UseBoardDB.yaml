@@ -1,0 +1,11 @@
+description: "Detects the “USE board” operation logged in MySQL general-query logs, which appears in OCSF **Datastore Activity** events as   `Init DB\tboard` ( `type_uid: 600504` ).   The rule uses only equality/contains logic so it can be mapped to ElastAlert without modifications.\n"
+filter:
+  - query:
+      query_string:
+        query: class_uid:6005 AND message:*Init* AND message:*DB*
+index: '*'
+name: UseBoardDB
+priority: 1
+type: any
+alert:
+  - slack

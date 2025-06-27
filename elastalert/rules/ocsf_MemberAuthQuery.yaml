@@ -1,0 +1,11 @@
+description: 'Detects MySQL authentication-check queries that compare **userid** (or user_id) and **userpw/password** fields in the **member** table, recorded as OCSF *Datastore Activity* events (`class_uid: 6005`, `activity_id: 4`).   Only equality/regex/AND logic is used so the rule converts cleanly to ElastAlert.'
+filter:
+  - query:
+      query_string:
+        query: class_uid:6005 AND database.name:mysql AND message:*select* AND message:*member* AND database.type:Relational
+index: '*'
+name: MemberAuthQuery
+priority: 2
+type: any
+alert:
+  - slack

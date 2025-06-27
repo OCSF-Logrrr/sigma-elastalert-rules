@@ -1,0 +1,11 @@
+description: "`/webapi/board/write_ok.php`로 향하는 **POST** 요청을 탐지합니다.   게시글 작성/첨부파일 업로드가 실제 실행되는 단계이므로,   연이어 업로드 확장자가 `.php`·`.jsp` 등 실행 가능한 파일이면 WebShell 탑재 시도로 간주할 수 있습니다.\n"
+filter:
+  - query:
+      query_string:
+        query: class_uid:4002 and http_request.http_method:POST and http_request.url.path:/webapi/board/write.php and message:*write_ok*
+index: '*'
+name: BoardWriteOK_Upload
+priority: 2
+type: any
+alert:
+  - slack

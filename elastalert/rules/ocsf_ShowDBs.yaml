@@ -1,0 +1,11 @@
+description: 'Detects execution of **`SHOW DATABASES`** (full-schema enumeration) captured in OCSF Datastore-Activity events (`class_uid: 6005`, `activity_id: 4`).   Uses only simple term / regex checks so it converts straight to ElastAlert.'
+filter:
+  - query:
+      query_string:
+        query: class_uid:6005 AND message:*show* AND message:*databases*
+index: '*'
+name: ShowDBs
+priority: 1
+type: any
+alert:
+  - slack

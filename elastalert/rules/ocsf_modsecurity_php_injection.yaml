@@ -1,0 +1,13 @@
+description: "Triggers when an OCSF \u201CApplication Security Alert\u201D (class_uid
+  6008) contains ModSecurity Core Rule Set ID 933150, which detects high-risk PHP
+  function names indicative of PHP injection attempts."
+filter:
+- query:
+    query_string:
+      query: class_uid:6008 AND message:*ModSecurity* AND message:*PHP* AND message:*933150*
+index: '*'
+name: ModSecurity - PHP Injection
+priority: 3
+type: any
+alert:
+  - slack

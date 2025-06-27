@@ -1,0 +1,11 @@
+description: "Flags direct *SELECT* statements that pull a single row from the **board** table (`SELECT * FROM board WHERE idx = …`).   When the attacker (or anyone else) opens the uploaded web-shell page, the CMS issues this query to fetch the article’s content.\n"
+filter:
+  - query:
+      query_string:
+        query: class_uid:6005 AND database.name:mysql AND message:*select* AND message:*member* AND database.type:Relational
+index: '*'
+name: BoardSelect
+priority: 1
+type: any
+alert:
+  - slack

@@ -1,0 +1,11 @@
+description: 'Detects the initial probe **`SELECT @@version_comment LIMIT 1`** that MySQL CLI issues right after an interactive connection.   Logged as OCSF **Datastore Activity** events   (`class_uid: 6005`, `activity_id: 4`).   Only simple term/contains logic is used so the rule converts one-to-one into ElastAlert.'
+filter:
+  - query:
+      query_string:
+        query: class_uid:6005 AND message:*@@version_comment*
+index: '*'
+name: SelectVerComment
+priority: 1
+type: any
+alert:
+  - slack

@@ -1,0 +1,11 @@
+description: 'Detects successful (HTTP 200) requests to **/admin/admin.php** in OCSF HTTP Activity events.   Uses only simple equality/contains checks so it converts cleanly to ElastAlert.'
+filter:
+  - query:
+      query_string:
+        query: class_uid:4002 AND http_request.url.path.keyword:"/admin/admin.php" AND http_reponse.code:200
+index: '*'
+name: AdminPHP Access
+priority: 1
+type: any
+alert:
+  - slack

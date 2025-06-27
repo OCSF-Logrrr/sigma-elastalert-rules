@@ -1,0 +1,11 @@
+description: "Detects Suricata IDS alerts that flag **external, abnormal MySQL connection attempts** (Priority 1 / “Attempted Administrator Privilege Gain”). Logged as OCSF Application-Activity (`class_uid: 6005`) events. Only equality and contains-string checks are used so the rule converts directly to ElastAlert.\n"
+filter:
+  - query:
+      query_string:
+        query: class_uid:6005 AND metadata.log_provider:suricata AND message:*MySQL* AND message:*4000000*
+index: '*'
+name: MySQLIDS
+priority: 3
+type: any
+alert:
+  - slack

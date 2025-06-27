@@ -1,0 +1,11 @@
+description: "Detects HTTP **POST** requests to **/webapi/member/login_ok.php** that originate from the login form **/webapi/member/login.php**, captured in OCSF *HTTP Activity* events (`class_uid: 4002`).  \n"
+filter:
+  - query:
+      query_string:
+        query: class_uid:4002 AND http_request.http_method:"POST" AND http_request.url.path:"/webapi/member/login_ok.php" AND message:*login_ok* AND message:*login* AND message:*php*
+index: '*'
+name: LoginOK
+priority: 1
+type: any
+alert:
+  - slack

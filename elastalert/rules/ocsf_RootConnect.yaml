@@ -1,0 +1,11 @@
+description: 'Detects **MySQL CLI connections as root** coming from remote hosts. In MySQL general-query logs the pattern appears as   `Connect    root@<IP> on  using SSL/TLS`.   Logged in OCSF as Datastore-Activity (`class_uid: 6005`).'
+filter:
+  - query:
+      query_string:
+        query: class_uid:6005 AND message:*SSL* AND message:*connect* AND message:*root*
+index: '*'
+name: RootConnect
+priority: 2
+type: any
+alert:
+  - slack
